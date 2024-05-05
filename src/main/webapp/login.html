@@ -5,15 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login / Sign Up</title>
     <link rel="stylesheet" href="styles.css">
-    <!-- Include React and ReactDOM Libraries -->
     <script src="https://unpkg.com/react@17/umd/react.production.min.js"></script>
     <script src="https://unpkg.com/react-dom@17/umd/react-dom.production.min.js"></script>
-    <!-- Babel for JSX compilation (optional, if you write JSX directly in HTML) -->
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
     <script src="login.js"></script>
 </head>
 <body>
-    <div id="react-navbar"></div> <!-- Placeholder for React Navbar component -->
+    <div id="react-navbar"></div>
 
     <div id="forms-container">
         <div class="form-box">
@@ -51,12 +49,12 @@
             const logoutUser = () => {
                 sessionStorage.removeItem("loggedIn");
                 setIsLoggedIn(false);
-                window.location.reload(); // Adjust as needed to redirect to homepage
+                window.location.reload(); 
             };
 
             return (
                 <div style={{
-                    width: 1400, 
+                    width: 1402, 
                     backgroundColor: '#a4c4da', 
                     padding: '10px 20px', 
                     display: 'flex',  
