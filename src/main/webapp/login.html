@@ -5,99 +5,39 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login / Sign Up</title>
     <link rel="stylesheet" href="styles.css">
-    <script src="https://unpkg.com/react@17/umd/react.production.min.js"></script>
-    <script src="https://unpkg.com/react-dom@17/umd/react-dom.production.min.js"></script>
-    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
     <script src="login.js"></script>
 </head>
 <body>
-    <div id="react-navbar"></div>
+    <div id="navbar">
+    	<div></div>
+        <a href="index.html" class="navbutton">Home</a>
+    </div>
 
     <div id="forms-container">
         <div class="form-box">
             <h2>Login</h2>
             <form>
-                <input type="text" placeholder="Username" id="usernameL" name="username" required>
-                <input type="password" placeholder="Password" id="passwordL" name="password" required>
-                <button class="button" type="button" onclick="loginUser()">Login</button>
+                <input type="text" placeholder="Username" id = "usernameL" name="username" required>
+                <input type="password" placeholder="Password" id = "passwordL" name="password" required>
+                <button class = "button" type="button" onclick="loginUser()">Login</button>
             </form>
             <div id="messageLE"></div>
         </div>
         <div class="form-box">
             <h2>Sign Up</h2>
             <form>
-                <input type="text" placeholder="Email" id="emailR" name="email" required>
-                <input type="text" placeholder="Username" id="usernameR" name="username" required>
-                <input type="text" placeholder="Name" id="nameR" name="name" required>
-                <input type="password" placeholder="Password" id="passwordR" name="password" required>
-                <input type="password" placeholder="Confirm Password" id="confirmPasswordR" name="confirm-password" required>
-                <button class="button" type="button" onclick="registerUser()">Sign Up</button>
+            	<input type="text" placeholder="Email" id = "emailR" name="email" required>
+                <input type="text" placeholder="Username" id = "usernameR" name="username" required>
+                <input type="text" placeholder="Name" id = "nameR" name="name" required>
+                <input type="password" placeholder="Password" id = "passwordR" name="password" required>
+                <input type="password" placeholder="Confirm Password" id = "confirmPasswordR" name="confirm-password" required>
+                <button class = "button" type="button" onclick="registerUser()">Sign Up</button>
             </form>
             <div id="messageE"></div>
         </div>
     </div>
 
-    <script type="text/babel">
-        function Navbar() {
-            const [isLoggedIn, setIsLoggedIn] = React.useState(false);
-
-            React.useEffect(() => {
-                const loggedIn = sessionStorage.getItem("loggedIn") === "true";
-                setIsLoggedIn(loggedIn);
-            }, []);
-
-            const logoutUser = () => {
-                sessionStorage.removeItem("loggedIn");
-                setIsLoggedIn(false);
-                window.location.reload(); 
-            };
-
-            return (
-                <div style={{
-                    width: 1402, 
-                    backgroundColor: '#a4c4da', 
-                    padding: '10px 20px', 
-                    display: 'flex',  
-                    justifyContent: 'flex-end',  
-                    alignItems: 'center'
-                }}>
-                    {isLoggedIn ? (
-                        <>
-                            <button onClick={logoutUser} style={{
-                                backgroundColor: 'white', 
-                                color: 'black', 
-                                padding: '10px 20px', 
-                                borderRadius: '5px', 
-                                border: 'none', 
-                                marginRight: '20px', 
-                                cursor: 'pointer'
-                            }}>Logout</button>
-                            <a href="index.html" style={{
-                                backgroundColor: 'white', 
-                                color: 'black', 
-                                padding: '10px 20px', 
-                                borderRadius: '5px', 
-                                border: 'none', 
-                                textDecoration: 'none', 
-                                cursor: 'pointer'
-                            }}>Home</a>
-                        </>
-                    ) : (
-                        <a href="index.html" style={{
-                            backgroundColor: 'white', 
-                            color: 'black', 
-                            padding: '10px 20px', 
-                            borderRadius: '5px', 
-                            border: 'none', 
-                            textDecoration: 'none', 
-                            cursor: 'pointer'
-                        }}>Home</a>
-                    )}
-                </div>
-            );
-        }
-
-        ReactDOM.render(<Navbar />, document.getElementById('react-navbar'));
-    </script>
 </body>
 </html>
+
+
