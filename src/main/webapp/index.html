@@ -9,22 +9,20 @@
     <script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js'></script>
     <script src='https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.27.0/moment.min.js'></script>
     <script src='https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.10.2/fullcalendar.min.js'></script>
-    <script src="index.js"></script>
+    <!-- Include React and ReactDOM Libraries -->
+    <script src="https://unpkg.com/react@17/umd/react.production.min.js"></script>
+    <script src="https://unpkg.com/react-dom@17/umd/react-dom.production.min.js"></script>
+    <!-- Babel for JSX compilation (optional, if you write JSX directly in HTML) -->
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 </head>
 <body>
-    <div id="navbar">
-    <div></div>
-        <a href="login.html" id ="loginsignup-button" class="navbutton">Login/Signup</a>
-        <button id="logoutButton" class="navbutton" style="display: none;" onclick="logoutUser()">Logout</button>
-        <button id="deleteAccountButton" class="navbutton" style="display: none;" onclick="deleteUser()">Delete Account</button>
-    </div>
-    
-    
+    <div id="react-navbar"></div> <!-- Placeholder for React Navbar component -->
+
+    <div id="greeting" class="greeting"></div>
 
     <div id="main-content">
         <div id="calendar"></div>
         <div id="sidebar">
-        	<div id="greeting" class="greeting"></div>
             <button id="addEventButton" class="Eventbutton" style="display: none;">Add Event</button>
             <div id="userFilters">
 			    <h3>Filter by User</h3>
@@ -44,10 +42,57 @@
 	            <input type="time" id="eventEndTime" required>
 	            <input type="text" id="eventLocation" placeholder="Event Location" required>
 	            <textarea id="eventDescription" placeholder="Event Description"></textarea>
-	            <button class = "button" type="button" onclick="addEvent()">Submit</button>
+	            <button class="button" type="button" onclick="addEvent()">Submit</button>
 	        </form>
 	    </div>
 	</div>
-    
+
+    <script type="text/babel">
+        function Navbar() {
+            const [isLoggedIn, setIsLoggedIn] = React.useState(false);
+
+            React.useEffect(() => {
+                const loggedIn = sessionStorage.getItem("loggedIn") === "true";
+                setIsLoggedIn(loggedIn);
+            }, []);
+
+            const logoutUser = () => {
+                sessionStorage.removeItem("loggedIn");
+                setIsLoggedIn(false);
+                window.location.reload();
+            };
+
+            const deleteUser = () => {
+                if (confirm("Are you sure you want to delete your account? This action cannot be undone.")) {
+                    console.log('Delete account logic here');
+                    logoutUser();
+                }
+            };
+
+            return (
+                <div style={{
+                    width: 1400, 
+                    backgroundColor: '#a4c4da', 
+                    padding: '10px 20px', 
+                    display: 'flex',  
+                    justifyContent: 'flex-end',  
+                    alignItems: 'center' 
+                }}>
+                    {isLoggedIn ? (
+                        <>
+                            <button onClick={logoutUser} style={{ backgroundColor: 'white', color: 'black', padding: '10px 20px', borderRadius: '5px', border: 'none', marginRight: '20px', cursor: 'pointer' }}>Logout</button>
+                            <button onClick={deleteUser} style={{ backgroundColor: 'white', color: 'black', padding: '10px 20px', borderRadius: '5px', border: 'none', cursor: 'pointer' }}>Delete Account</button>
+                        </>
+                    ) : (
+                        <a href="login.html" style={{ backgroundColor: 'white', color: 'black', padding: '10px 20px', borderRadius: '5px', border: 'none', marginRight: '20px', textDecoration: 'none', cursor: 'pointer' }}>Login/Signup</a>
+                    )}
+                </div>
+            );
+        }
+
+        ReactDOM.render(<Navbar />, document.getElementById('react-navbar'));
+    </script>
+
+    <script src="index.js"></script> <!-- Your existing JS for calendar and other functionality -->
 </body>
 </html>
