@@ -3,6 +3,8 @@ package groupCalendar;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.Queue;
 import java.util.Set;
 import javax.websocket.*;
 import javax.websocket.server.ServerEndpoint;
@@ -35,8 +37,13 @@ public class CalendarServer {
     }
     
     private void broadcastMessage(String message) {
+    	Queue<Session> sessionList = new LinkedList<>();
         for (Session s : sessions) {
+        	sessionList.add(s);
+        }
+        while(!sessionList.isEmpty()) {
             try {
+            	Session s = sessionList.poll();
                 s.getBasicRemote().sendText(message);
                 System.out.println("Sent message");
             } 
@@ -44,6 +51,7 @@ public class CalendarServer {
                 System.err.println("Error broadcasting message: " + e.getMessage());
             }
         }
+        
     }
 
 }
