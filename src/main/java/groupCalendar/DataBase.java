@@ -15,7 +15,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 public class DataBase {
-    private static final String DB_URL = "jdbc:mysql://localhost/GroupCalendar?user=root&password=$";
+    private static final String DB_URL = "jdbc:mysql://localhost/GroupCalendar?user=root&password=root";
 
     static {
         try {

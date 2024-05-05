@@ -1,6 +1,12 @@
+var socket;
+
 document.addEventListener('DOMContentLoaded', function() {
 	// shows right buttons
     updateUIBasedOnLoginStatus();
+    createSessionForUser();
+    setTimeout(function() {
+    	socket.send("Signup");
+    }, 500);
 });
 
 function updateUIBasedOnLoginStatus() {
@@ -59,6 +65,8 @@ function deleteUser() {
                 alert("Account deleted successfully");
                 window.location.href = "index.html"; // go back to home page
                 logoutUser();
+                socket.send("Delete");
+                
             } else {
                 alert("Failed to delete account.");
             }
@@ -74,45 +82,47 @@ function deleteUser() {
 
 // siplays correct events in calendar
 $(document).ready(function() {
-    $('#calendar').fullCalendar({
-        header: {
-            left: 'prev,next today',
-            center: 'title',
-            right: ''
-        },
-        editable: true,
-        eventLimit: true, // allow "more" link when too many events
-
-        // Fetch and display events
-        events: function(start, end, timezone, callback) {
-            var selectedUsers = $('.user-filter:checked').map(function() {
-                return $(this).val(); // get the value from each checked checkbox
-            }).get(); // TO CONVERT the jQuery object into a regular array we can use
-            
-            console.log("seleted users: ");
-            console.log(selectedUsers);
-            
-            $.ajax({
-                url: 'FetchEventsServlet',
-                type: 'GET',
-                data: { users: JSON.stringify(selectedUsers) },
-                dataType: 'json',
-                success: function(response) {
-                    var events = [];
-                    $(response).each(function() {
-                        events.push({
-                            title: this.eventName,
-                            start: this.eventDate + 'T' + this.startTime,
-                            end: this.eventDate + 'T' + this.endTime,
-                            description: this.description
-                        });
-                    });
-                    callback(events);
-                }
-            });
-        }
-    });
-
+	setTimeout(function() {
+	    $('#calendar').fullCalendar({
+	        header: {
+	            left: 'prev,next today',
+	            center: 'title',
+	            right: ''
+	        },
+	        editable: true,
+	        eventLimit: true, // allow "more" link when too many events
+	
+	        // Fetch and display events
+	        events: function(start, end, timezone, callback) {
+				    var selectedUsers = $('.user-filter:checked').map(function() {
+	                return $(this).val(); // get the value from each checked checkbox
+	            }).get(); // TO CONVERT the jQuery object into a regular array we can use
+	            
+	            console.log("seleted users: ");
+	            console.log(selectedUsers);	
+	            
+	            $.ajax({
+	                url: 'FetchEventsServlet',
+	                type: 'GET',
+	                data: { users: JSON.stringify(selectedUsers) },
+	                dataType: 'json',
+	                success: function(response) {
+	                    var events = [];
+	                    $(response).each(function() {
+	                        events.push({
+	                            title: this.eventName,
+	                            start: this.eventDate + 'T' + this.startTime,
+	                            end: this.eventDate + 'T' + this.endTime,
+	                            description: this.description
+	                        });
+	                    });
+	                    callback(events);
+	                }
+	            });            
+	            
+	        }
+	    });
+	}, 900);
     // fetch and display users with checkbox filters
     fetchAndDisplayUsers();
 });
@@ -130,7 +140,7 @@ function fetchAndDisplayUsers() {
             var filters = users.map(function(user) {
                 return `<label><input type="checkbox" class="user-filter" value="${user.userID}" checked> ${user.name}</label><br>`;
             }).join('');
-            $('#userFilters').append(filters);
+            $('#userFilters').empty().append(filters);
             updateUserFilterListeners();
         }
     });
@@ -220,14 +230,7 @@ function addEvent() {
             console.log("Event added successfully");
             // Close the modal
             document.getElementById('addEventModal').style.display = 'none';
-            // Add event to the calendar
-            $('#calendar').fullCalendar('renderEvent', {
-                title: eventData.eName,
-                start: new Date(eventData.eDate + 'T' + eventData.eStartTime),
-                end: new Date(eventData.eDate + 'T' + eventData.eEndTime),
-                allDay: false,
-                description: eventData.eDescription
-            }, true);
+            socket.send("Update calendars");
         }
     })
     .catch(error => {
@@ -235,3 +238,28 @@ function addEvent() {
     });
 }
 
+function createSessionForUser(){
+	socket = new WebSocket("ws://localhost:9090/AllInOneCalendar/websocket");
+	
+	socket.onopen = function(event) {
+        console.log("WebSocket connection opened");
+    };
+
+    socket.onmessage = function(event) {
+		console.log("Received message");
+		console.log(event.data);
+  		$('#calendar').fullCalendar('refetchEvents');
+  		if(event.data != "Update calendars"){
+			  fetchAndDisplayUsers();
+		}	
+    };
+
+    socket.onclose = function(event) {		
+		console.log("WebSocket connection closed");
+    };
+
+    socket.onerror = function(error) {
+		console.log("WebSocket connection error");
+    };
+
+}
